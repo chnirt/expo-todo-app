@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useMemo } from 'react'
 import { useColorScheme } from 'react-native'
 
 const ThemeContext = createContext()
@@ -19,10 +19,13 @@ export const ThemeProvider = ({ children }) => {
     ? deviceColorScheme === 'dark'
     : colorScheme === 'dark'
 
-  const value = {
-    isDark,
-    toggleTheme,
-  }
+  const value = useMemo(
+    () => ({
+      isDark,
+      toggleTheme,
+    }),
+    [isDark, toggleTheme]
+  )
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
