@@ -5,19 +5,17 @@ const ThemeContext = createContext()
 
 export const ThemeProvider = ({ children }) => {
   const colorScheme = useColorScheme()
-  const [deviceColorScheme, setDeviceColorScheme] = useState(null)
+  const [deviceColorScheme, setDeviceColorScheme] = useState(colorScheme)
   const toggleTheme = () =>
     setDeviceColorScheme((previousState) =>
       previousState === 'light' ? 'dark' : 'light'
     )
 
   useEffect(() => {
-    setDeviceColorScheme(null)
+    setDeviceColorScheme(colorScheme)
   }, [colorScheme])
 
-  const isDark = deviceColorScheme
-    ? deviceColorScheme === 'dark'
-    : colorScheme === 'dark'
+  const isDark = deviceColorScheme === 'dark'
 
   const value = useMemo(
     () => ({

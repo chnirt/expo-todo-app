@@ -8,3 +8,4 @@ update expo app when you get error below
 https://docs.expo.dev/versions/latest/sdk/reanimated/
 https://docs.expo.dev/guides/color-schemes/
 https://docs.swmansion.com/react-native-reanimated/docs/tutorials/LayoutAnimations/layoutAnimations
+https://docs.expo.dev/versions/latest/react-native/layoutanimation/
