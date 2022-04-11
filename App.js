@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar'
 import React from 'react'
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
   View,
   Switch,
@@ -13,10 +12,14 @@ import {
   LayoutAnimation,
 } from 'react-native'
 import Animated from 'react-native-reanimated'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Entypo } from '@expo/vector-icons';
 import { APP_NAME } from '@env'
 import TaskList from './src/components/TaskList'
 import { useTheme } from './src/context/Theme'
 import RippleButton from './src/components/RippleButton'
+
+const AnimatedSvg = Animated.createAnimatedComponent(Entypo)
 
 if (
   Platform.OS === 'android' &&
@@ -26,6 +29,7 @@ if (
 }
 
 export default function App() {
+  const insets = useSafeAreaInsets();
   const { isDark, toggleTheme, animatedBackgroundStyle, animatedTextStyle } =
     useTheme()
 
@@ -55,16 +59,24 @@ export default function App() {
     )
   }
 
+  const FloatingButton = () => {
+    return (
+      <View style={[styles.rippleButtonContainer, {
+        bottom: insets.bottom,
+      }]}>
+        <RippleButton size={48}>
+          <AnimatedSvg style={animatedTextStyle} name="plus" size={24} />
+        </RippleButton>
+      </View>
+    )
+  }
+
   return (
     <Animated.View style={[styles.safeAreaView, animatedBackgroundStyle]}>
       <SafeAreaView style={styles.container}>
         <Header />
 
-        <View style={styles.rippleButtonContainer}>
-          <RippleButton >
-            <Animated.Text style={[animatedTextStyle]}>asd</Animated.Text>
-          </RippleButton>
-        </View>
+        <FloatingButton />
       </SafeAreaView>
     </Animated.View>
   )
@@ -152,8 +164,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   rippleButtonContainer: {
-    position: "absolute",
-    right: 16,
-    bottom: 16,
-  }
+    position: 'absolute',
+    right: 16
+  },
 })
