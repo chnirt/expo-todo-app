@@ -1,12 +1,25 @@
 import React, { useCallback } from 'react'
-import { StyleSheet, View, ScrollView, FlatList } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  FlatList,
+} from 'react-native'
 import Task from './Task'
 import Loading from './Loading'
+import { ITEM_HEIGHT } from '../constants'
+import { useTheme } from '../context/Theme'
 
-export const ITEM_HEIGHT = 30
-
-const TaskList = ({ type = 'basic', tasks, onValueUpdate, onValueDelete }) => {
+const TaskList = ({
+  type = 'basic',
+  refreshing,
+  onRefresh,
+  tasks,
+  onValueUpdate,
+  onValueDelete,
+}) => {
   const isBasic = type === 'basic'
+  const { } = useTheme()
 
   if (tasks === null) return <Loading />
 
@@ -43,6 +56,8 @@ const TaskList = ({ type = 'basic', tasks, onValueUpdate, onValueDelete }) => {
         renderItem={renderItem}
         ItemSeparatorComponent={ItemSeparatorComponent}
         getItemLayout={getItemLayout}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     )
   }

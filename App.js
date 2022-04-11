@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -36,6 +36,8 @@ export default function App() {
   } = useTheme()
   const { tasks, addTask, updateTask, removeTask } = useTask()
 
+  const [refreshing, setRefreshing] = useState(false)
+
   const actionAnimation = useCallback(
     () => LayoutAnimation.configureNext(LayoutAnimation.Presets.spring),
     []
@@ -46,10 +48,20 @@ export default function App() {
     addTask('Lorem ipsum dolor sit amet, consectetur adipiscing elit')
   }, [actionAnimation, addTask])
 
-  const handleRemoveTask = useCallback((id) => {
-    actionAnimation()
-    removeTask(id)
-  }, [actionAnimation, removeTask])
+  const handleRemoveTask = useCallback(
+    (id) => {
+      actionAnimation()
+      removeTask(id)
+    },
+    [actionAnimation, removeTask]
+  )
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true)
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 2000)
+  }, [])
 
   const Header = useCallback(() => {
     return (
@@ -62,22 +74,25 @@ export default function App() {
     )
   }, [animatedTextStyle, APP_NAME, isDark, toggleTheme])
 
-  const FloatingButton = useCallback(({ onPress }) => {
-    return (
-      <View
-        style={[
-          styles.rippleButtonContainer,
-          {
-            bottom: insets.bottom,
-          },
-        ]}
-      >
-        <RippleButton size={48} onPress={onPress}>
-          <AnimatedSvg style={animatedIconStyle} name="plus" size={24} />
-        </RippleButton>
-      </View>
-    )
-  }, [insets, animatedIconStyle])
+  const FloatingButton = useCallback(
+    ({ onPress }) => {
+      return (
+        <View
+          style={[
+            styles.rippleButtonContainer,
+            {
+              bottom: insets.bottom,
+            },
+          ]}
+        >
+          <RippleButton size={48} onPress={onPress}>
+            <AnimatedSvg style={animatedIconStyle} name="plus" size={24} />
+          </RippleButton>
+        </View>
+      )
+    },
+    [insets, animatedIconStyle]
+  )
 
   return (
     <Animated.View style={[styles.safeAreaView, animatedBackgroundStyle]}>
@@ -87,6 +102,8 @@ export default function App() {
         <View style={styles.bodyContainer}>
           <TaskList
             tasks={tasks}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
             onValueUpdate={updateTask}
             onValueDelete={handleRemoveTask}
           />

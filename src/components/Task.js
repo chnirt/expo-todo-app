@@ -1,14 +1,11 @@
 import React, { useRef, useEffect, useCallback } from 'react'
-import { StyleSheet, View, Pressable } from 'react-native'
-import Animated, {
-  Layout,
-  FadeIn,
-  FadeOut,
-} from 'react-native-reanimated'
+import { StyleSheet, View, Pressable, Text } from 'react-native'
+import Animated, { Layout, FadeIn, FadeOut } from 'react-native-reanimated'
+import { Swipeable } from 'react-native-gesture-handler'
 import { useTheme } from '../context/Theme'
 import UnCheckBoxSvg from './UnCheckBoxSvg'
 import CheckBoxSvg from './CheckBoxSvg'
-import { ITEM_HEIGHT } from './TaskList'
+import { ITEM_HEIGHT } from '../constants'
 
 const Task = ({ index, isBasic, task, onValueUpdate, onValueDelete }) => {
   const initialMode = useRef(true)
@@ -48,16 +45,40 @@ const Task = ({ index, isBasic, task, onValueUpdate, onValueDelete }) => {
     )
   }, [task, animatedTextStyle])
 
+  const renderLeftActions = useCallback(() => {
+    return (
+      <View>
+        <Text>renderLeftActions</Text>
+      </View>
+    )
+  }, [])
+  const renderRightActions = useCallback(() => {
+    return (
+      <View>
+        <Text>renderLeftActions</Text>
+      </View>
+    )
+  }, [])
+  const onSwipeableRightOpen = useCallback(() => { }, [])
+  const onSwipeableLeftOpen = useCallback(() => { }, [])
+
   if (isBasic) {
     return (
-      <Pressable
-        style={styles.row}
-        onPress={() =>
-          typeof onValueUpdate === 'function' && onValueUpdate(task.id)
-        }
+      <Swipeable
+        renderLeftActions={renderLeftActions}
+        renderRightActions={renderRightActions}
+        onSwipeableRightOpen={onSwipeableRightOpen}
+        onSwipeableLeftOpen={onSwipeableLeftOpen}
       >
-        <TaskContent />
-      </Pressable>
+        <Pressable
+          style={styles.row}
+          onPress={() =>
+            typeof onValueUpdate === 'function' && onValueUpdate(task.id)
+          }
+        >
+          <TaskContent />
+        </Pressable>
+      </Swipeable>
     )
   }
 
