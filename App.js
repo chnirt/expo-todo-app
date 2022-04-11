@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import React, { useState } from 'react'
+import React from 'react'
 import {
   StyleSheet,
   SafeAreaView,
@@ -12,8 +12,10 @@ import {
   UIManager,
   LayoutAnimation,
 } from 'react-native'
+import { APP_NAME } from '@env'
 import TaskList from './src/components/TaskList'
 import { useTheme } from './src/context/Theme'
+import Animated from 'react-native-reanimated'
 
 if (
   Platform.OS === 'android' &&
@@ -23,39 +25,40 @@ if (
 }
 
 export default function App() {
-  const { isDark, toggleTheme } = useTheme()
-  const [taskInput, setTaskInput] = useState('' + Date.now().toString())
-  const [tasks, setTasks] = useState(null)
-
-  const onChangeTextValue = (text) => setTaskInput(text)
+  const { isDark, toggleTheme, animatedBackgroundStyle, animatedTextStyle } =
+    useTheme()
 
   const actionAnimation = () =>
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
 
-  const addTask = (title) => {
-    const newTask = {
-      id: Date.now().toString() + title,
-      title,
-    }
-    setTasks((prevState) => [newTask].concat(prevState ?? []))
-    setTaskInput('' + Date.now().toString())
-  }
-
-  const removeTask = (id) => {
-    setTasks((prevState) => prevState.filter((item) => item.id !== id))
-    setTaskInput('' + Date.now().toString())
-  }
-
-  const themeTextStyle = isDark ? styles.darkThemeText : styles.lightThemeText
-  const themeContainerStyle = isDark
-    ? styles.darkContainer
-    : styles.lightContainer
+  return (
+    <Animated.View
+      style={[
+        {
+          flex: 1,
+        },
+        animatedBackgroundStyle,
+      ]}
+    >
+      <SafeAreaView
+        style={styles.container}
+      >
+        <Animated.Text style={[animatedTextStyle]}>{APP_NAME}</Animated.Text>
+        <Switch
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleTheme}
+          value={isDark}
+        />
+      </SafeAreaView>
+    </Animated.View>
+  )
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.container, themeContainerStyle]}>
         <Text style={[styles.text, themeTextStyle]}>
           Open up App.js to start working on your app!
+          {APP_NAME}
         </Text>
         <StatusBar style="auto" />
 
@@ -127,17 +130,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     // justifyContent: 'center',
-  },
-  lightContainer: {
-    backgroundColor: '#d0d0c0',
-  },
-  darkContainer: {
-    backgroundColor: '#242c40',
-  },
-  lightThemeText: {
-    color: '#242c40',
-  },
-  darkThemeText: {
-    color: '#d0d0c0',
   },
 })
