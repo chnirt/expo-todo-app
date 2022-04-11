@@ -9,3 +9,4 @@ https://docs.expo.dev/versions/latest/sdk/reanimated/
 https://docs.expo.dev/guides/color-schemes/
 https://docs.swmansion.com/react-native-reanimated/docs/tutorials/LayoutAnimations/layoutAnimations
 https://docs.expo.dev/versions/latest/react-native/layoutanimation/
+https://github.com/react-native-community/upgrade-support/issues/138

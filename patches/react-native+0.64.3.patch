@@ -1,0 +1,17 @@
+diff --git a/node_modules/react-native/scripts/find-node.sh b/node_modules/react-native/scripts/find-node.sh
+index 2ef8cf8..52cf0ba 100755
+--- a/node_modules/react-native/scripts/find-node.sh
++++ b/node_modules/react-native/scripts/find-node.sh
+@@ -6,6 +6,12 @@
+ 
+ set -e
+ 
++# remove global prefix if it's already set
++# the running shell process will choose a node binary and a global package directory breaks version managers
++unset PREFIX
++unset npm_config_prefix
++
++
+ # Define NVM_DIR and source the nvm.sh setup script
+ [ -z "$NVM_DIR" ] && export NVM_DIR="$HOME/.nvm"
+ 
