@@ -8,7 +8,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { useTheme } from '../context/Theme'
 
-export const Task = ({ isBasic, task, onValueDelete }) => {
+const Task = ({ isBasic, task, onValueDelete }) => {
   const { isDark } = useTheme()
   const themeTextStyle = isDark ? styles.darkThemeText : styles.lightThemeText
 
@@ -64,3 +64,5 @@ const styles = StyleSheet.create({
     color: '#d0d0c0',
   },
 })
+
+export default Task

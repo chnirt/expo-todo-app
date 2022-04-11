@@ -15,10 +15,12 @@ const Colors = {
   dark: {
     backgroundColor: '#1F1B2C',
     color: '#F7F9F9',
+    primary: '#512da8',
   },
   light: {
     backgroundColor: '#F7F9F9',
     color: '#181818',
+    primary: '#9575cd',
   },
 }
 
@@ -60,19 +62,44 @@ export const ThemeProvider = ({ children }) => {
     ),
   }))
 
+  const animatedPrimaryStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      progress.value,
+      [0, 1],
+      [processColor(Colors.light.primary), processColor(Colors.dark.primary)]
+    ),
+  }))
+
+  const animatedShadowStyle = useAnimatedStyle(() => ({
+    shadowColor: interpolateColor(
+      progress.value,
+      [0, 1],
+      [processColor(Colors.light.primary), processColor(Colors.dark.primary)]
+    ),
+  }))
+
   const value = useMemo(
     () => ({
       isDark,
       toggleTheme,
       animatedBackgroundStyle,
       animatedTextStyle,
+      animatedPrimaryStyle,
+      animatedShadowStyle,
     }),
-    [isDark, toggleTheme, animatedBackgroundStyle, animatedTextStyle]
+    [
+      isDark,
+      toggleTheme,
+      animatedBackgroundStyle,
+      animatedTextStyle,
+      animatedPrimaryStyle,
+      animatedShadowStyle,
+    ]
   )
 
   return (
     <ThemeContext.Provider value={value}>
-      <StatusBar style={isDark ? "light" : "dark"} />
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       {children}
     </ThemeContext.Provider>
   )

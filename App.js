@@ -12,10 +12,11 @@ import {
   UIManager,
   LayoutAnimation,
 } from 'react-native'
+import Animated from 'react-native-reanimated'
 import { APP_NAME } from '@env'
 import TaskList from './src/components/TaskList'
 import { useTheme } from './src/context/Theme'
-import Animated from 'react-native-reanimated'
+import RippleButton from './src/components/RippleButton'
 
 if (
   Platform.OS === 'android' &&
@@ -31,22 +32,39 @@ export default function App() {
   const actionAnimation = () =>
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
 
-  return (
-    <Animated.View
-      style={[
-        styles.safeAreaView,
-        animatedBackgroundStyle,
-      ]}
-    >
-      <SafeAreaView
-        style={styles.container}
+  const Header = () => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          height: 56,
+          paddingHorizontal: 16,
+        }}
       >
-        <Animated.Text style={[animatedTextStyle]}>{APP_NAME}</Animated.Text>
+        <Animated.Text style={[styles.appName, animatedTextStyle]}>
+          {APP_NAME}
+        </Animated.Text>
         <Switch
           ios_backgroundColor="#3e3e3e"
           onValueChange={toggleTheme}
           value={isDark}
         />
+      </View>
+    )
+  }
+
+  return (
+    <Animated.View style={[styles.safeAreaView, animatedBackgroundStyle]}>
+      <SafeAreaView style={styles.container}>
+        <Header />
+
+        <View style={styles.rippleButtonContainer}>
+          <RippleButton >
+            <Animated.Text style={[animatedTextStyle]}>asd</Animated.Text>
+          </RippleButton>
+        </View>
       </SafeAreaView>
     </Animated.View>
   )
@@ -129,7 +147,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: 'center',
-    // justifyContent: 'center',
   },
+  appName: {
+    textTransform: 'uppercase',
+  },
+  rippleButtonContainer: {
+    position: "absolute",
+    right: 16,
+    bottom: 16,
+  }
 })

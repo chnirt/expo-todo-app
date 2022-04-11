@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, View, Text, FlatList } from 'react-native'
 import { useTheme } from '../context/Theme'
-import { Task } from './Task'
+import Task from './Task'
 
-export default function TaskList({ type = 'basic', tasks, onValueDelete }) {
-  const isBasic = type === 'basic';
+const TaskList = ({ type = 'basic', tasks, onValueDelete }) => {
+  const isBasic = type === 'basic'
   const { isDark } = useTheme()
   const themeTextStyle = isDark ? styles.darkThemeText : styles.lightThemeText
 
@@ -16,7 +16,13 @@ export default function TaskList({ type = 'basic', tasks, onValueDelete }) {
     )
 
   return (
-    <FlatList data={tasks} keyExtractor={item => item.id} renderItem={({ item }) => <Task isBasic={isBasic} task={item} onValueDelete={onValueDelete} />} />
+    <FlatList
+      data={tasks}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <Task isBasic={isBasic} task={item} onValueDelete={onValueDelete} />
+      )}
+    />
   )
 }
 
@@ -28,3 +34,5 @@ const styles = StyleSheet.create({
     color: '#d0d0c0',
   },
 })
+
+export default TaskList

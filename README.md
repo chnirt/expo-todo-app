@@ -12,3 +12,8 @@ https://docs.expo.dev/versions/latest/react-native/layoutanimation/
 https://github.com/react-native-community/upgrade-support/issues/138
 https://levelup.gitconnected.com/using-environment-variables-in-a-react-native-app-f2dd005d2457
 https://github.com/software-mansion/react-native-reanimated/issues/1053
+
+animated:
+https://www.youtube.com/watch?v=U_V9pHnTXjA
+header:
+https://material.io/components/backdrop#specs
