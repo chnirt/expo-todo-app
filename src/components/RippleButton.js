@@ -18,7 +18,7 @@ const RippleButton = ({
   minDurationMs = 800,
   onPress,
   children,
-  rippleColor = '#9e9e9e50'
+  rippleColor = '#42424250'
 }) => {
   const { animatedPrimaryStyle, animatedShadowStyle } = useTheme()
   const centerX = useSharedValue(size / 2)

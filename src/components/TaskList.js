@@ -1,37 +1,74 @@
-import React from 'react'
-import { StyleSheet, View, Text, FlatList } from 'react-native'
-import { useTheme } from '../context/Theme'
+import React, { useCallback } from 'react'
+import { StyleSheet, View, ScrollView, FlatList } from 'react-native'
 import Task from './Task'
+import Loading from './Loading'
 
-const TaskList = ({ type = 'basic', tasks, onValueDelete }) => {
+export const ITEM_HEIGHT = 30
+
+const TaskList = ({ type = 'basic', tasks, onValueUpdate, onValueDelete }) => {
   const isBasic = type === 'basic'
-  const { isDark } = useTheme()
-  const themeTextStyle = isDark ? styles.darkThemeText : styles.lightThemeText
 
-  if (tasks === null)
-    return (
-      <View>
-        <Text style={themeTextStyle}>Loading...</Text>
-      </View>
+  if (tasks === null) return <Loading />
+
+  const ItemSeparatorComponent = useCallback(
+    () => <View style={styles.separator} />,
+    []
+  )
+
+  if (isBasic) {
+    const keyExtractor = useCallback((item) => item.id, [])
+    const renderItem = useCallback(
+      ({ item }) => (
+        <Task
+          isBasic={isBasic}
+          task={item}
+          onValueUpdate={onValueUpdate}
+          onValueDelete={onValueDelete}
+        />
+      ),
+      []
     )
+    const getItemLayout = useCallback(
+      (_, index) => ({
+        length: ITEM_HEIGHT,
+        offset: ITEM_HEIGHT * index,
+        index,
+      }),
+      []
+    )
+    return (
+      <FlatList
+        data={tasks}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+        getItemLayout={getItemLayout}
+      />
+    )
+  }
 
   return (
-    <FlatList
-      data={tasks}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <Task isBasic={isBasic} task={item} onValueDelete={onValueDelete} />
-      )}
-    />
+    <ScrollView>
+      {tasks.length > 0 &&
+        tasks.map((task, ti) => {
+          const isLast = ti === tasks.length - 1
+          return (
+            <View key={`task-${ti}`}>
+              <Task
+                isBasic={isBasic}
+                task={task}
+                onValueDelete={onValueDelete}
+              />
+              {!isLast && <ItemSeparatorComponent />}
+            </View>
+          )
+        })}
+    </ScrollView>
   )
 }
-
 const styles = StyleSheet.create({
-  lightThemeText: {
-    color: '#242c40',
-  },
-  darkThemeText: {
-    color: '#d0d0c0',
+  separator: {
+    height: 15,
   },
 })
 

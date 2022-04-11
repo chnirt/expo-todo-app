@@ -17,3 +17,6 @@ animated:
 https://www.youtube.com/watch?v=U_V9pHnTXjA
 header:
 https://material.io/components/backdrop#specs
+https://docs.expo.dev/versions/latest/sdk/safe-area-context/
+flatList
+https://codingislove.com/optimize-react-native-flatlist-performance/

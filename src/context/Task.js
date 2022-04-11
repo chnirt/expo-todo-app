@@ -1,28 +1,76 @@
-import { createContext, useContext } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+} from 'react'
 
 const TaskContext = createContext()
 
 export const TaskProvider = ({ children }) => {
-  const [taskInput, setTaskInput] = useState('' + Date.now().toString())
+  const [newTask, setNewTask] = useState('' + Date.now().toString())
   const [tasks, setTasks] = useState(null)
 
-  const onChangeTextValue = (text) => setTaskInput(text)
+  useEffect(() => {
+    const fetchTask = () => {
+      // setTasks({
+      //   id: new Date().toString(),
+      //   title: 'Hello ',
+      // })
+      setTasks([])
+    }
+    const unsubscribed = setTimeout(() => {
+      Array(1)
+        .fill(0)
+        .map(() => fetchTask())
+    }, 1000)
 
-  const addTask = (title) => {
+    return () => {
+      unsubscribed()
+    }
+  }, [])
+
+  const onChangeNewTaskValue = useCallback((text) => setNewTask(text), [])
+
+  const addTask = useCallback((title) => {
+    const createdAt = +new Date()
     const newTask = {
-      id: Date.now().toString() + title,
+      id: createdAt + title,
       title,
+      createdAt,
+      completed: false,
     }
     setTasks((prevState) => [newTask].concat(prevState ?? []))
-    setTaskInput('' + Date.now().toString())
-  }
+    setNewTask('')
+  }, [])
 
-  const removeTask = (id) => {
+  const updateTask = useCallback((id) => {
+    setTasks((prevState) =>
+      prevState.map((item) =>
+        item.id === id ? { ...item, completed: !item.completed } : item
+      )
+    )
+    setNewTask('')
+  }, [])
+
+  const removeTask = useCallback((id) => {
     setTasks((prevState) => prevState.filter((item) => item.id !== id))
-    setTaskInput('' + Date.now().toString())
-  }
+    setNewTask('')
+  }, [])
 
-  const value = useMemo(() => ({}), [])
+  const value = useMemo(
+    () => ({
+      newTask,
+      onChangeNewTaskValue,
+      addTask,
+      tasks,
+      updateTask,
+      removeTask,
+    }),
+    [newTask, onChangeNewTaskValue, addTask, tasks, updateTask, removeTask]
+  )
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>
 }
 

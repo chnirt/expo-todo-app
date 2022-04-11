@@ -1,67 +1,110 @@
-import React from 'react'
-import { StyleSheet, View, Text, Button } from 'react-native'
+import React, { useRef, useEffect, useCallback } from 'react'
+import { StyleSheet, View, Pressable } from 'react-native'
 import Animated, {
   Layout,
-  LightSpeedInLeft,
-  LightSpeedOutLeft,
-  // LightSpeedOutRight,
+  FadeIn,
+  FadeOut,
 } from 'react-native-reanimated'
 import { useTheme } from '../context/Theme'
+import UnCheckBoxSvg from './UnCheckBoxSvg'
+import CheckBoxSvg from './CheckBoxSvg'
+import { ITEM_HEIGHT } from './TaskList'
 
-const Task = ({ isBasic, task, onValueDelete }) => {
-  const { isDark } = useTheme()
-  const themeTextStyle = isDark ? styles.darkThemeText : styles.lightThemeText
+const Task = ({ index, isBasic, task, onValueUpdate, onValueDelete }) => {
+  const initialMode = useRef(true)
+  const { animatedTextStyle } = useTheme()
+
+  useEffect(() => {
+    initialMode.current = false
+  }, [])
+
+  const TaskContent = useCallback(() => {
+    return (
+      <View style={styles.row}>
+        <View style={styles.checkBoxContainer}>
+          {task.completed ? <CheckBoxSvg /> : <UnCheckBoxSvg />}
+        </View>
+        <View style={styles.contentContainer}>
+          <Animated.Text
+            style={[
+              styles.titleText,
+              animatedTextStyle,
+              task.completed && styles.completedText,
+            ]}
+          >
+            {task.title}
+          </Animated.Text>
+          <Animated.Text
+            style={[
+              styles.timeText,
+              animatedTextStyle,
+              task.completed && styles.completedText,
+            ]}
+          >
+            {task.createdAt}
+          </Animated.Text>
+        </View>
+      </View>
+    )
+  }, [task, animatedTextStyle])
 
   if (isBasic) {
     return (
-      <View style={styles.row}>
-        <Text style={themeTextStyle}>{task.title}</Text>
-        <Button
-          title="remove"
-          color="red"
-          onPress={() =>
-            typeof onValueDelete === 'function' && onValueDelete(task.id)
-          }
-        />
-      </View>
+      <Pressable
+        style={styles.row}
+        onPress={() =>
+          typeof onValueUpdate === 'function' && onValueUpdate(task.id)
+        }
+      >
+        <TaskContent />
+      </Pressable>
     )
   }
 
   return (
     <Animated.View
-      style={styles.row}
-      entering={LightSpeedInLeft}
-      exiting={LightSpeedOutLeft}
-      layout={Layout.springify()}
+      entering={initialMode.current ? FadeIn.delay(100 * index) : FadeIn}
+      exiting={FadeOut}
+      layout={Layout.delay(100)}
+      onTouchEnd={() =>
+        typeof onValueDelete === 'function' && onValueDelete(task.id)
+      }
     >
-      <Text style={themeTextStyle}>{task.title}</Text>
-      <Button
-        title="remove"
-        color="red"
-        onPress={() =>
-          typeof onValueDelete === 'function' && onValueDelete(task.id)
-        }
-      />
+      <TaskContent />
     </Animated.View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    // justifyContent: 'center',
-  },
   row: {
+    height: ITEM_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
-  lightThemeText: {
-    color: '#242c40',
+  checkBoxContainer: {
+    // borderWidth: 1
   },
-  darkThemeText: {
-    color: '#d0d0c0',
+  contentContainer: {
+    marginLeft: 10,
+  },
+  titleText: {
+    fontStyle: 'normal',
+    fontWeight: '500',
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#737373',
+  },
+  timeText: {
+    fontStyle: 'normal',
+    fontWeight: '500',
+    fontSize: 10,
+    lineHeight: 14,
+    color: '#A3A3A3',
+  },
+  completedText: {
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'solid',
+    color: '#737373',
   },
 })
 

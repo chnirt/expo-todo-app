@@ -1,8 +1,9 @@
 import { registerRootComponent } from 'expo'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 import App from './App'
 import { ThemeProvider } from './src/context/Theme'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { TaskProvider } from './src/context/Task'
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in Expo Go or in a native build,
@@ -10,7 +11,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 registerRootComponent(() => (
   <SafeAreaProvider>
     <ThemeProvider>
-      <App />
+      <TaskProvider>
+        <App />
+      </TaskProvider>
     </ThemeProvider>
   </SafeAreaProvider>
 ))

@@ -1,5 +1,12 @@
 import { StatusBar } from 'expo-status-bar'
-import { createContext, useContext, useState, useEffect, useMemo } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react'
 import { useColorScheme } from 'react-native'
 import {
   interpolateColor,
@@ -28,10 +35,13 @@ export const ThemeProvider = ({ children }) => {
   const colorScheme = useColorScheme()
   const [deviceColorScheme, setDeviceColorScheme] = useState(colorScheme)
 
-  const toggleTheme = () =>
-    setDeviceColorScheme((previousState) =>
-      previousState === 'light' ? 'dark' : 'light'
-    )
+  const toggleTheme = useCallback(
+    () =>
+      setDeviceColorScheme((previousState) =>
+        previousState === 'light' ? 'dark' : 'light'
+      ),
+    []
+  )
 
   useEffect(() => {
     setDeviceColorScheme(colorScheme)
@@ -70,6 +80,17 @@ export const ThemeProvider = ({ children }) => {
     ),
   }))
 
+  const animatedIconStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      progress.value,
+      [0, 1],
+      [
+        processColor(Colors.light.backgroundColor),
+        processColor(Colors.dark.backgroundColor),
+      ]
+    ),
+  }))
+
   const animatedShadowStyle = useAnimatedStyle(() => ({
     shadowColor: interpolateColor(
       progress.value,
@@ -86,6 +107,7 @@ export const ThemeProvider = ({ children }) => {
       animatedTextStyle,
       animatedPrimaryStyle,
       animatedShadowStyle,
+      animatedIconStyle,
     }),
     [
       isDark,
@@ -94,6 +116,7 @@ export const ThemeProvider = ({ children }) => {
       animatedTextStyle,
       animatedPrimaryStyle,
       animatedShadowStyle,
+      animatedIconStyle,
     ]
   )
 
