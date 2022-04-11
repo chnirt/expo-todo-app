@@ -8,7 +8,6 @@ import {
 import Task from './Task'
 import Loading from './Loading'
 import { ITEM_HEIGHT } from '../constants'
-import { useTheme } from '../context/Theme'
 
 const TaskList = ({
   type = 'basic',
@@ -19,7 +18,6 @@ const TaskList = ({
   onValueDelete,
 }) => {
   const isBasic = type === 'basic'
-  const { } = useTheme()
 
   if (tasks === null) return <Loading />
 
