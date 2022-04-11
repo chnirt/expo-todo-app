@@ -1,3 +1,4 @@
+import { StatusBar } from 'expo-status-bar'
 import { createContext, useContext, useState, useEffect, useMemo } from 'react'
 import { useColorScheme } from 'react-native'
 import {
@@ -9,6 +10,17 @@ import {
 } from 'react-native-reanimated'
 
 const ThemeContext = createContext()
+
+const Colors = {
+  dark: {
+    backgroundColor: '#1F1B2C',
+    color: '#F7F9F9',
+  },
+  light: {
+    backgroundColor: '#F7F9F9',
+    color: '#181818',
+  },
+}
 
 export const ThemeProvider = ({ children }) => {
   const colorScheme = useColorScheme()
@@ -33,7 +45,10 @@ export const ThemeProvider = ({ children }) => {
     backgroundColor: interpolateColor(
       progress.value,
       [0, 1],
-      [processColor('#1F1B2C'), processColor('#F7F9F9')]
+      [
+        processColor(Colors.light.backgroundColor),
+        processColor(Colors.dark.backgroundColor),
+      ]
     ),
   }))
 
@@ -41,7 +56,7 @@ export const ThemeProvider = ({ children }) => {
     color: interpolateColor(
       progress.value,
       [0, 1],
-      [processColor('#F7F9F9'), processColor('#181818')]
+      [processColor(Colors.light.color), processColor(Colors.dark.color)]
     ),
   }))
 
@@ -55,7 +70,12 @@ export const ThemeProvider = ({ children }) => {
     [isDark, toggleTheme, animatedBackgroundStyle, animatedTextStyle]
   )
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={value}>
+      <StatusBar style={isDark ? "light" : "dark"} />
+      {children}
+    </ThemeContext.Provider>
+  )
 }
 
 export const useTheme = () => useContext(ThemeContext)

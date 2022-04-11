@@ -34,9 +34,7 @@ export default function App() {
   return (
     <Animated.View
       style={[
-        {
-          flex: 1,
-        },
+        styles.safeAreaView,
         animatedBackgroundStyle,
       ]}
     >
@@ -126,6 +124,9 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
