@@ -15,6 +15,7 @@ import TaskList from './src/components/TaskList'
 import { useTheme } from './src/context/Theme'
 import RippleButton from './src/components/RippleButton'
 import { useTask } from './src/context/Task'
+import Navigation from './src/navigation'
 
 const AnimatedSvg = Animated.createAnimatedComponent(Entypo)
 
@@ -90,7 +91,7 @@ export default function App() {
             },
           ]}
         >
-          <RippleButton size={48} onPress={onPress}>
+          <RippleButton size={64} onPress={onPress}>
             <AnimatedSvg style={animatedIconStyle} name="plus" size={24} />
           </RippleButton>
         </View>
@@ -98,6 +99,8 @@ export default function App() {
     },
     [insets, animatedIconStyle]
   )
+
+  return <Navigation />
 
   return (
     <Animated.View style={[styles.safeAreaView, animatedBackgroundStyle]}>
