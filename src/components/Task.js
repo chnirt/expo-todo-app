@@ -9,41 +9,61 @@ import { ITEM_HEIGHT } from '../constants'
 
 const Task = ({ index, isBasic, task, onValueUpdate, onValueDelete }) => {
   const initialMode = useRef(true)
-  const { animatedTextStyle } = useTheme()
+  const { isDark, animatedTextStyle } = useTheme()
 
   useEffect(() => {
     initialMode.current = false
   }, [])
 
   const TaskContent = useCallback(() => {
+    const getFill = () => {
+      if (isDark) {
+        if (task.completed) {
+          return '#FFFFFF50'
+        }
+        return '#FFFFFF'
+      }
+      if (task.completed) {
+        return '#18181850'
+      }
+      return '#181818'
+    }
     return (
       <View style={styles.row}>
         <View style={styles.checkBoxContainer}>
-          {task.completed ? <CheckBoxSvg /> : <UnCheckBoxSvg />}
+          {task.completed ? (
+            <CheckBoxSvg fill={getFill()} />
+          ) : (
+            <UnCheckBoxSvg fill={getFill()} />
+          )}
         </View>
         <View style={styles.contentContainer}>
           <Animated.Text
             style={[
-              styles.titleText,
               animatedTextStyle,
+              styles.todoText,
+              styles.titleText,
               task.completed && styles.completedText,
             ]}
+            numberOfLines={2}
           >
             {task.title}
           </Animated.Text>
           <Animated.Text
             style={[
-              styles.timeText,
               animatedTextStyle,
+              styles.todoText,
+              styles.timeText,
               task.completed && styles.completedText,
             ]}
+            numberOfLines={1}
           >
             {task.createdAt}
           </Animated.Text>
         </View>
       </View>
     )
-  }, [task, animatedTextStyle])
+  }, [task.completed, animatedTextStyle])
 
   const renderLeftActions = useCallback(() => {
     return (
@@ -103,21 +123,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkBoxContainer: {
-    // borderWidth: 1
   },
   contentContainer: {
     marginLeft: 10,
   },
-  titleText: {
+  todoText: {
     fontStyle: 'normal',
     fontWeight: '500',
+  },
+  titleText: {
     fontSize: 12,
     lineHeight: 16,
     color: '#737373',
   },
   timeText: {
-    fontStyle: 'normal',
-    fontWeight: '500',
     fontSize: 10,
     lineHeight: 14,
     color: '#A3A3A3',
@@ -126,6 +145,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     textDecorationStyle: 'solid',
     color: '#737373',
+    opacity: 0.5,
   },
 })
 

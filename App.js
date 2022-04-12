@@ -48,6 +48,11 @@ export default function App() {
     addTask('Lorem ipsum dolor sit amet, consectetur adipiscing elit')
   }, [actionAnimation, addTask])
 
+  const handleUpdateTask = useCallback((id) => {
+    actionAnimation()
+    updateTask(id)
+  }, [])
+
   const handleRemoveTask = useCallback(
     (id) => {
       actionAnimation()
@@ -104,7 +109,7 @@ export default function App() {
             tasks={tasks}
             refreshing={refreshing}
             onRefresh={onRefresh}
-            onValueUpdate={updateTask}
+            onValueUpdate={handleUpdateTask}
             onValueDelete={handleRemoveTask}
           />
           {/* <TaskList
@@ -136,6 +141,7 @@ const styles = StyleSheet.create({
   },
   appName: {
     textTransform: 'uppercase',
+    fontWeight: "bold"
   },
   bodyContainer: {
     flex: 1,

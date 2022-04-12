@@ -1,34 +1,20 @@
-import * as React from "react"
-import Svg, { G, Path, Defs } from "react-native-svg"
+import * as React from 'react'
+import Svg, { Path } from 'react-native-svg'
+import Animated from 'react-native-reanimated'
 /* SVGR has dropped some elements not supported by react-native-svg: filter */
 
-const CheckBoxSvg = (props) => (
-  <Svg
-    width={31}
-    height={32}
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <G filter="url(#a)">
-      <Path
-        d="M7.323 12.547c0-2.659 0-3.988.517-5.003a4.747 4.747 0 0 1 2.075-2.075c1.015-.517 2.344-.517 5.003-.517h.633c2.658 0 3.987 0 5.002.517a4.747 4.747 0 0 1 2.075 2.075c.517 1.015.517 2.344.517 5.003v.633c0 2.658 0 3.987-.517 5.002a4.747 4.747 0 0 1-2.075 2.075c-1.015.517-2.344.517-5.003.517h-.632c-2.659 0-3.988 0-5.003-.517a4.746 4.746 0 0 1-2.075-2.075c-.517-1.015-.517-2.344-.517-5.002v-.633Z"
-        fill="#262626"
+const AnimatedPath = Animated.createAnimatedComponent(Path)
+
+const CheckBoxSvg = (props) => {
+  const { fill = '#ffffff' } = props
+  return (
+    <Svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} {...props}>
+      <AnimatedPath
+        fill={fill}
+        d="m10.041 17-4.5-4.319 1.395-1.435 3.08 2.937L17.037 7l1.422 1.409L10.041 17zM5 2C3.346 2 2 3.346 2 5v14c0 1.654 1.346 3 3 3h14c1.654 0 3-1.346 3-3V5c0-1.654-1.346-3-3-3H5zm19 3v14a5 5 0 0 1-5 5H5a5 5 0 0 1-5-5V5a5 5 0 0 1 5-5h14a5 5 0 0 1 5 5z"
       />
-      <Path
-        d="M7.323 12.547c0-2.659 0-3.988.517-5.003a4.747 4.747 0 0 1 2.075-2.075c1.015-.517 2.344-.517 5.003-.517h.633c2.658 0 3.987 0 5.002.517a4.747 4.747 0 0 1 2.075 2.075c.517 1.015.517 2.344.517 5.003v.633c0 2.658 0 3.987-.517 5.002a4.747 4.747 0 0 1-2.075 2.075c-1.015.517-2.344.517-5.003.517h-.632c-2.659 0-3.988 0-5.003-.517a4.746 4.746 0 0 1-2.075-2.075c-.517-1.015-.517-2.344-.517-5.002v-.633Z"
-        stroke="#262626"
-        strokeWidth={1.582}
-      />
-    </G>
-    <Path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M20.54 9.14a.791.791 0 0 1 0 1.118l-6.329 6.329a.791.791 0 0 1-1.119 0l-3.164-3.165a.791.791 0 0 1 1.119-1.118l2.605 2.605 5.77-5.77a.79.79 0 0 1 1.118 0Z"
-      fill="#FAFAFA"
-    />
-    <Defs></Defs>
-  </Svg>
-)
+    </Svg>
+  )
+}
 
 export default CheckBoxSvg

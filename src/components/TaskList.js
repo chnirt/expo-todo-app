@@ -1,10 +1,5 @@
 import React, { useCallback } from 'react'
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  FlatList,
-} from 'react-native'
+import { StyleSheet, View, ScrollView, FlatList } from 'react-native'
 import Task from './Task'
 import Loading from './Loading'
 import { ITEM_HEIGHT } from '../constants'
