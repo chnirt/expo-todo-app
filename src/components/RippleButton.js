@@ -1,4 +1,9 @@
-import React, { useRef } from 'react'
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  Fragment,
+} from 'react'
 import { StyleSheet, View } from 'react-native'
 import Animated, {
   runOnJS,
@@ -14,51 +19,64 @@ import {
 import { useTheme } from '../context/Theme'
 
 const RippleButton = ({
-  size = 100,
   minDurationMs = 800,
   onPress,
   children,
-  rippleColor = '#42424250'
+  rippleColor = '#42424250',
+  animated = false,
+  style = {},
 }) => {
-  const { animatedPrimaryStyle, animatedShadowStyle } = useTheme()
-  const centerX = useSharedValue(size / 2)
-  const centerY = useSharedValue(size / 2)
+  const [measure, setMeasure] = useState(null)
+  const width = measure?.width ?? 1
+  const height = measure?.height ?? 1
+  const centerX = useSharedValue(width / 2)
+  const centerY = useSharedValue(height / 2)
   const scale = useSharedValue(0)
   const opacity = useSharedValue(1)
 
-  const rippleSize = Math.sqrt(size ** 2 + size ** 2)
+  const animatedRippleStyle = useAnimatedStyle(() => {
+    const rippleSize = Math.sqrt(width ** 2 + height ** 2)
 
-  const animatedRippleStyle = useAnimatedStyle(() => ({
-    position: 'absolute',
-    width: rippleSize * 2,
-    height: rippleSize * 2,
-    borderRadius: rippleSize,
-    top: -rippleSize,
-    left: -rippleSize,
-    backgroundColor: rippleColor,
-    opacity: opacity.value,
-    transform: [
-      {
-        translateX: centerX.value,
-      },
-      {
-        translateY: centerY.value,
-      },
-      {
-        scale: scale.value,
-      },
-    ],
-  }))
+    return {
+      position: 'absolute',
+      width: rippleSize * 2,
+      height: rippleSize * 2,
+      borderRadius: rippleSize,
+      top: -rippleSize,
+      left: -rippleSize,
+      backgroundColor: rippleColor,
+      opacity: opacity.value,
+      transform: [
+        {
+          translateX: centerX.value,
+        },
+        {
+          translateY: centerY.value,
+        },
+        {
+          scale: scale.value,
+        },
+      ],
+    }
+  })
 
   const doubleTapRef = useRef()
 
-  const onLongPress = (event) => {
+  const onLayout = useCallback((event) => {
+    const { height, width } = event.nativeEvent.layout
+    setMeasure({
+      width,
+      height,
+    })
+  }, [])
+
+  const onLongPress = useCallback((event) => {
     if (event.nativeEvent.state === State.BEGAN) {
       // console.log('onLongPress')
     }
-  }
+  }, [])
 
-  const onSingleTap = (event) => {
+  const onSingleTap = useCallback((event) => {
     if (event.nativeEvent.state === State.BEGAN) {
       // console.log('onSingleTap')
       centerX.value = event.nativeEvent.x
@@ -73,62 +91,56 @@ const RippleButton = ({
     if (event.nativeEvent.state === State.END) {
       opacity.value = withTiming(0)
     }
-  }
-  const onDoubleTap = (event) => {
+  }, [])
+
+  const onDoubleTap = useCallback((event) => {
     if (event.nativeEvent.state === State.BEGAN) {
       // console.log('onDoubleTap')
     }
+  }, [])
+
+  const Content = () => {
+    return (
+      <Fragment>
+        {children}
+        <Animated.View style={[animatedRippleStyle]} />
+      </Fragment>
+    )
   }
 
   return (
-    <LongPressGestureHandler
-      onHandlerStateChange={onLongPress}
-      minDurationMs={minDurationMs}
-    >
-      <TapGestureHandler
-        onHandlerStateChange={onSingleTap}
-        waitFor={doubleTapRef}
+    <View onLayout={!measure && onLayout}>
+      <LongPressGestureHandler
+        onHandlerStateChange={onLongPress}
+        minDurationMs={minDurationMs}
       >
         <TapGestureHandler
-          ref={doubleTapRef}
-          onHandlerStateChange={onDoubleTap}
-          numberOfTaps={2}
+          onHandlerStateChange={onSingleTap}
+          waitFor={doubleTapRef}
         >
-          <Animated.View
-            style={[
-              styles.button,
-              animatedPrimaryStyle,
-              animatedShadowStyle,
-              {
-                width: size,
-                height: size,
-                borderRadius: size / 2,
-              },
-            ]}
+          <TapGestureHandler
+            ref={doubleTapRef}
+            onHandlerStateChange={onDoubleTap}
+            numberOfTaps={2}
           >
-            <View>{children}</View>
-            <Animated.View style={[animatedRippleStyle]} />
-          </Animated.View>
+            {animated ? (
+              <Animated.View style={[styles.button, style]}>
+                <Content />
+              </Animated.View>
+            ) : (
+              <View style={[styles.button, style]}>
+                <Content />
+              </View>
+            )}
+          </TapGestureHandler>
         </TapGestureHandler>
-      </TapGestureHandler>
-    </LongPressGestureHandler>
+      </LongPressGestureHandler>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
-
     overflow: 'hidden',
   },
 })

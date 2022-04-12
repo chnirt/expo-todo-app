@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import App from './App'
 import { ThemeProvider } from './src/context/Theme'
 import { TaskProvider } from './src/context/Task'
+import { AuthProvider } from './src/context/Auth'
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in Expo Go or in a native build,
@@ -13,7 +14,9 @@ registerRootComponent(() => (
     <ThemeProvider>
       <TaskProvider>
         <NavigationContainer>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </NavigationContainer>
       </TaskProvider>
     </ThemeProvider>
