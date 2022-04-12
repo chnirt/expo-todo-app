@@ -6,17 +6,22 @@ import {
   Platform,
   UIManager,
   LayoutAnimation,
+  Pressable,
 } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Entypo } from '@expo/vector-icons'
+import { Feather } from '@expo/vector-icons';
 import { APP_NAME } from '@env'
 import TaskList from '../components/TaskList'
 import { useTheme } from '../context/Theme'
 import RippleButton from '../components/RippleButton'
 import { useTask } from '../context/Task'
+import { useAuth } from '../context/Auth'
 
 const AnimatedSvg = Animated.createAnimatedComponent(Entypo)
+const AnimatedFeatherSvg = Animated.createAnimatedComponent(Feather)
+
 
 if (
   Platform.OS === 'android' &&
@@ -33,7 +38,9 @@ const HomeScreen = () => {
     animatedBackgroundStyle,
     animatedTextStyle,
     animatedIconStyle,
+    animatedPrimaryStyle,
   } = useTheme()
+  const { signOut } = useAuth()
   const { tasks, addTask, updateTask, removeTask } = useTask()
 
   const [refreshing, setRefreshing] = useState(false)
@@ -74,7 +81,14 @@ const HomeScreen = () => {
         <Animated.Text style={[styles.appName, animatedTextStyle]}>
           {APP_NAME}
         </Animated.Text>
-        <Switch onValueChange={toggleTheme} value={isDark} />
+        <View style={styles.headerRight}>
+          <Switch onValueChange={toggleTheme} value={isDark} />
+          <View style={styles.logoutContainer}>
+            <Pressable onPress={signOut}>
+              <AnimatedFeatherSvg style={animatedTextStyle} name="log-out" size={24} />
+            </Pressable>
+          </View>
+        </View>
       </View>
     )
   }, [animatedTextStyle, APP_NAME, isDark, toggleTheme])
@@ -90,7 +104,11 @@ const HomeScreen = () => {
             },
           ]}
         >
-          <RippleButton size={64} onPress={onPress}>
+          <RippleButton
+            animated={true}
+            style={[styles.rippleButton, animatedPrimaryStyle]}
+            onPress={onPress}
+          >
             <AnimatedSvg style={animatedIconStyle} name="plus" size={24} />
           </RippleButton>
         </View>
@@ -139,6 +157,11 @@ const styles = StyleSheet.create({
     height: 56,
     paddingHorizontal: 16,
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: "center"
+  },
+  logoutContainer: { marginLeft: 16 },
   appName: {
     textTransform: 'uppercase',
     fontWeight: 'bold',
@@ -150,6 +173,13 @@ const styles = StyleSheet.create({
   rippleButtonContainer: {
     position: 'absolute',
     right: 16,
+  },
+  rippleButton: {
+    width: 64,
+    height: 64,
+    borderRadius: 64 / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 })
 

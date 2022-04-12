@@ -15,6 +15,7 @@ import {
   processColor,
   withTiming,
 } from 'react-native-reanimated'
+import { PRIMARY_COLOR, PRIMARY_COLOR90 } from '../constants'
 
 const ThemeContext = createContext()
 
@@ -22,12 +23,12 @@ const Colors = {
   dark: {
     backgroundColor: '#1F1B2C',
     color: '#F7F9F9',
-    primary: '#512da8',
+    primary: PRIMARY_COLOR90,
   },
   light: {
     backgroundColor: '#F7F9F9',
     color: '#181818',
-    primary: '#9575cd',
+    primary: PRIMARY_COLOR,
   },
 }
 

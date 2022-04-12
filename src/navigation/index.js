@@ -3,11 +3,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import SignInScreen from '../screens/SignIn'
 import SignUpScreen from '../screens/SignUp'
 import HomeScreen from '../screens/Home'
+import { useAuth } from '../context/Auth'
 
 const Stack = createNativeStackNavigator()
 
 const Navigation = () => {
-  const isSignedIn = false
+  const { user } = useAuth()
+  const isSignedIn = !!user
   return isSignedIn ? (
     <Stack.Navigator
       screenOptions={{
