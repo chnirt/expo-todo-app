@@ -14,30 +14,17 @@ import logo from '../assets/logo.png'
 import { useAuth } from '../context/Auth'
 import { PRIMARY_COLOR } from '../constants'
 import { useNavigation } from '@react-navigation/native'
-import { auth } from '../firebase'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
 
 const SignUpScreen = () => {
   const navigation = useNavigation()
   const { animatedIconStyle, animatedBackgroundStyle, animatedPrimaryStyle } =
     useTheme()
-  const { signIn } = useAuth()
+  const { signUp } = useAuth()
   const [email, setEmail] = useState('trinhchinchin@gmail.com')
   const [password, setPassword] = useState('Admin@123')
 
   const onPress = useCallback(() => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user
-        console.log('user---', user)
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code
-        const errorMessage = error.message
-        // ..
-      })
+    signUp(email, password)
   }, [])
 
   const navigateSignIn = useCallback(() => {

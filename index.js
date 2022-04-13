@@ -5,6 +5,7 @@ import App from './App'
 import { ThemeProvider } from './src/context/Theme'
 import { TaskProvider } from './src/context/Task'
 import { AuthProvider } from './src/context/Auth'
+import { LoadingProvider } from './src/context/Loading'
 import './src/firebase'
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
@@ -12,14 +13,16 @@ import './src/firebase'
 // the environment is set up appropriately
 registerRootComponent(() => (
   <SafeAreaProvider>
-    <ThemeProvider>
-      <TaskProvider>
+    <LoadingProvider>
+      <ThemeProvider>
         <NavigationContainer>
           <AuthProvider>
-            <App />
+            <TaskProvider>
+              <App />
+            </TaskProvider>
           </AuthProvider>
         </NavigationContainer>
-      </TaskProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </LoadingProvider>
   </SafeAreaProvider>
 ))
