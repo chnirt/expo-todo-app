@@ -100,7 +100,7 @@ const HomeScreen = () => {
           style={[
             styles.rippleButtonContainer,
             {
-              bottom: insets.bottom,
+              bottom: insets.bottom > 0 ? insets.bottom : 16,
             },
           ]}
         >
