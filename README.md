@@ -1,3 +1,7 @@
+## Teaser
+
+![alt text](./src/assets/teaser.gif)
+
 ## See more
 
 https://github.com/expo/expo-cli/issues/4140
