@@ -24,8 +24,12 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState('Admin@123')
 
   const onPress = useCallback(() => {
-    signUp(email, password)
-  }, [])
+    const userInput = {
+      email,
+      password,
+    }
+    signUp(userInput)
+  }, [email, password])
 
   const navigateSignIn = useCallback(() => {
     navigation.navigate('SignIn')

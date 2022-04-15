@@ -20,7 +20,7 @@ const SignInScreen = () => {
   const { animatedIconStyle, animatedBackgroundStyle, animatedPrimaryStyle } =
     useTheme()
   const { signIn } = useAuth()
-  const [email, setEmail] = useState('trinhchinchin@gmail.com')
+  const [email, setEmail] = useState('trinhchinchin2@gmail.com')
   const [password, setPassword] = useState('Admin@123')
 
   const onPress = useCallback(() => {
@@ -29,7 +29,7 @@ const SignInScreen = () => {
       password,
     }
     signIn(userInput)
-  }, [])
+  }, [email, password])
 
   const navigateSignUp = useCallback(() => {
     navigation.navigate("SignUp")

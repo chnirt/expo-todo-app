@@ -1,0 +1,6 @@
+module Pods_expotodoapp {
+  umbrella header "Pods-expotodoapp-umbrella.h"
+
+  export *
+  module * { export * }
+}

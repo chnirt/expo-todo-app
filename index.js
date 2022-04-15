@@ -3,7 +3,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import App from './App'
 import { ThemeProvider } from './src/context/Theme'
-import { TaskProvider } from './src/context/Task'
 import { AuthProvider } from './src/context/Auth'
 import { LoadingProvider } from './src/context/Loading'
 import './src/firebase'
@@ -17,9 +16,7 @@ registerRootComponent(() => (
       <ThemeProvider>
         <NavigationContainer>
           <AuthProvider>
-            <TaskProvider>
-              <App />
-            </TaskProvider>
+            <App />
           </AuthProvider>
         </NavigationContainer>
       </ThemeProvider>

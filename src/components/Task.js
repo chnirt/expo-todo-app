@@ -162,7 +162,7 @@ const Task = ({ index, isBasic, task, onValueUpdate, onValueDelete }) => {
         <Pressable
           style={styles.row}
           onPress={() =>
-            typeof onValueUpdate === 'function' && onValueUpdate(task.id)
+            typeof onValueUpdate === 'function' && onValueUpdate(task)
           }
         >
           <TaskContent />

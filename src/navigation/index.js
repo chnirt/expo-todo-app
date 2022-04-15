@@ -4,6 +4,7 @@ import SignInScreen from '../screens/SignIn'
 import SignUpScreen from '../screens/SignUp'
 import HomeScreen from '../screens/Home'
 import { useAuth } from '../context/Auth'
+import { TaskProvider } from '../context/Task'
 
 const Stack = createNativeStackNavigator()
 
@@ -16,7 +17,14 @@ const Navigation = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen
+        name="Home"
+        children={(props) => (
+          <TaskProvider>
+            <HomeScreen {...props} />
+          </TaskProvider>
+        )}
+      />
     </Stack.Navigator>
   ) : (
     <Stack.Navigator

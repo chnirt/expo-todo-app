@@ -12,12 +12,12 @@ import Animated from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Entypo } from '@expo/vector-icons'
 import { Feather } from '@expo/vector-icons';
-import { APP_NAME } from '@env'
 import TaskList from '../components/TaskList'
 import { useTheme } from '../context/Theme'
 import RippleButton from '../components/RippleButton'
 import { useTask } from '../context/Task'
 import { useAuth } from '../context/Auth'
+import { appName } from '../environments'
 
 const AnimatedSvg = Animated.createAnimatedComponent(Entypo)
 const AnimatedFeatherSvg = Animated.createAnimatedComponent(Feather)
@@ -55,9 +55,9 @@ const HomeScreen = () => {
     addTask('Lorem ipsum dolor sit amet, consectetur adipiscing elit')
   }, [actionAnimation, addTask])
 
-  const handleUpdateTask = useCallback((id) => {
+  const handleUpdateTask = useCallback((task) => {
     actionAnimation()
-    updateTask(id)
+    updateTask(task)
   }, [])
 
   const handleRemoveTask = useCallback(
@@ -79,7 +79,7 @@ const HomeScreen = () => {
     return (
       <View style={styles.headerContainer}>
         <Animated.Text style={[styles.appName, animatedTextStyle]}>
-          {APP_NAME}
+          {appName}
         </Animated.Text>
         <View style={styles.headerRight}>
           <Switch onValueChange={toggleTheme} value={isDark} />
@@ -91,7 +91,7 @@ const HomeScreen = () => {
         </View>
       </View>
     )
-  }, [animatedTextStyle, APP_NAME, isDark, toggleTheme])
+  }, [animatedTextStyle, isDark, toggleTheme])
 
   const FloatingButton = useCallback(
     ({ onPress }) => {

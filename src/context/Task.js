@@ -6,26 +6,27 @@ import {
   useEffect,
   useCallback,
 } from 'react'
+import {
+  deleteToDoFromFirestore,
+  getToDosFromFirestore,
+  saveTodoToFirestore,
+  updateToDoToFirestore,
+} from '../firebase'
+import { useLoading } from './Loading'
 
 const TaskContext = createContext()
 
 export const TaskProvider = ({ children }) => {
+  const { show, hide } = useLoading()
   const [newTask, setNewTask] = useState('' + Date.now().toString())
   const [tasks, setTasks] = useState(null)
 
   useEffect(() => {
-    const fetchTask = () => {
-      // setTasks({
-      //   id: new Date().toString(),
-      //   title: 'Hello ',
-      // })
-      setTasks([])
+    const fetchTask = async () => {
+      const toDosResponse = await getToDosFromFirestore()
+      setTasks(toDosResponse)
     }
-    const unsubscribed = setTimeout(() => {
-      Array(1)
-        .fill(0)
-        .map(() => fetchTask())
-    }, 1000)
+    const unsubscribed = fetchTask()
 
     return () => {
       unsubscribed()
@@ -34,30 +35,47 @@ export const TaskProvider = ({ children }) => {
 
   const onChangeNewTaskValue = useCallback((text) => setNewTask(text), [])
 
-  const addTask = useCallback((title) => {
+  const addTask = useCallback(async (title) => {
+    show()
     const createdAt = +new Date()
-    const newTask = {
-      id: createdAt + title,
+    let newTask = {
       title,
       createdAt,
       completed: false,
     }
+    const docRef = await saveTodoToFirestore(newTask)
+    newTask.id = docRef.id
     setTasks((prevState) => [newTask].concat(prevState ?? []))
     setNewTask('')
+    hide()
   }, [])
 
-  const updateTask = useCallback((id) => {
-    setTasks((prevState) =>
-      prevState.map((item) =>
-        item.id === id ? { ...item, completed: !item.completed } : item
+  const updateTask = useCallback(async (task) => {
+    show()
+    const updatedToDo = {
+      id: task.id,
+      completed: !task.completed
+    }
+    const updatedToDoResponse = await updateToDoToFirestore(updatedToDo)
+    if (updatedToDoResponse) {
+      setTasks((prevState) =>
+        prevState.map((item) =>
+          item.id === task.id ? { ...item, ...updatedToDo } : item
+        )
       )
-    )
-    setNewTask('')
+      setNewTask('')
+    }
+    hide()
   }, [])
 
-  const removeTask = useCallback((id) => {
-    setTasks((prevState) => prevState.filter((item) => item.id !== id))
-    setNewTask('')
+  const removeTask = useCallback(async (id) => {
+    show()
+    const deletedToDoResponse = await deleteToDoFromFirestore(id)
+    if (deletedToDoResponse) {
+      setTasks((prevState) => prevState.filter((item) => item.id !== id))
+      setNewTask('')
+    }
+    hide()
   }, [])
 
   const value = useMemo(

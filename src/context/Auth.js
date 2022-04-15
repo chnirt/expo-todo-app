@@ -12,7 +12,7 @@ import {
   useCallback,
   useEffect,
 } from 'react'
-import { auth } from '../firebase'
+import { auth, saveUserToFirestore } from '../firebase'
 import { useLoading } from './Loading'
 
 const AuthContext = createContext()
@@ -66,12 +66,14 @@ export const AuthProvider = ({ children }) => {
         hide()
       })
   }, [])
-  const signUp = useCallback(() => {
+  const signUp = useCallback((userInput) => {
     show()
+    const { email, password } = userInput
     fbCreateUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user
+
         // setUser(user)
         // ...
       })
