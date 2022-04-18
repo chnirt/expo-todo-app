@@ -11,17 +11,17 @@ import {
 import Animated from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Entypo } from '@expo/vector-icons'
-import { Feather } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons'
 import TaskList from '../components/TaskList'
 import { useTheme } from '../context/Theme'
 import RippleButton from '../components/RippleButton'
 import { useTask } from '../context/Task'
 import { useAuth } from '../context/Auth'
 import { appName } from '../environments'
+import DragView from '../components/DragView'
 
 const AnimatedSvg = Animated.createAnimatedComponent(Entypo)
 const AnimatedFeatherSvg = Animated.createAnimatedComponent(Feather)
-
 
 if (
   Platform.OS === 'android' &&
@@ -85,13 +85,36 @@ const HomeScreen = () => {
           <Switch onValueChange={toggleTheme} value={isDark} />
           <View style={styles.logoutContainer}>
             <Pressable onPress={signOut}>
-              <AnimatedFeatherSvg style={animatedTextStyle} name="log-out" size={24} />
+              <AnimatedFeatherSvg
+                style={animatedTextStyle}
+                name="log-out"
+                size={24}
+              />
             </Pressable>
           </View>
         </View>
       </View>
     )
   }, [animatedTextStyle, isDark, toggleTheme])
+
+  const Body = useCallback(() => {
+    return (
+      <View style={styles.bodyContainer}>
+        <TaskList
+          tasks={tasks}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          onValueUpdate={handleUpdateTask}
+          onValueDelete={handleRemoveTask}
+        />
+        {/* <TaskList
+            type="animated"
+            tasks={tasks}
+            onValueDelete={handleRemoveTask}
+          /> */}
+      </View>
+    )
+  }, [tasks, refreshing, styles])
 
   const FloatingButton = useCallback(
     ({ onPress }) => {
@@ -119,25 +142,22 @@ const HomeScreen = () => {
 
   return (
     <Animated.View style={[styles.safeAreaView, animatedBackgroundStyle]}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container]}>
         <Header />
 
-        <View style={styles.bodyContainer}>
-          <TaskList
-            tasks={tasks}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            onValueUpdate={handleUpdateTask}
-            onValueDelete={handleRemoveTask}
-          />
-          {/* <TaskList
-            type="animated"
-            tasks={tasks}
-            onValueDelete={handleRemoveTask}
-          /> */}
-        </View>
+        <Body />
 
-        <FloatingButton onPress={handleAddTask} />
+        <DragView>
+          <RippleButton
+            animated={true}
+            style={[styles.rippleButton, animatedPrimaryStyle]}
+            onPress={handleAddTask}
+          >
+            <AnimatedSvg style={animatedIconStyle} name="plus" size={24} />
+          </RippleButton>
+        </DragView>
+
+        {/* <FloatingButton handleAddTask={handleAddTask} /> */}
       </SafeAreaView>
     </Animated.View>
   )
@@ -159,7 +179,7 @@ const styles = StyleSheet.create({
   },
   headerRight: {
     flexDirection: 'row',
-    alignItems: "center"
+    alignItems: 'center',
   },
   logoutContainer: { marginLeft: 16 },
   appName: {

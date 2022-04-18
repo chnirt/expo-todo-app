@@ -1,9 +1,4 @@
-import React, {
-  useRef,
-  useState,
-  useCallback,
-  Fragment,
-} from 'react'
+import React, { useRef, useState, useCallback, Fragment } from 'react'
 import { StyleSheet, View } from 'react-native'
 import Animated, {
   runOnJS,
@@ -12,14 +7,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import {
-  LongPressGestureHandler,
+  // LongPressGestureHandler,
   TapGestureHandler,
   State,
 } from 'react-native-gesture-handler'
-import { useTheme } from '../context/Theme'
 
 const RippleButton = ({
-  minDurationMs = 800,
+  // minDurationMs = 800,
   onPress,
   children,
   rippleColor = '#42424250',
@@ -62,6 +56,27 @@ const RippleButton = ({
 
   const doubleTapRef = useRef()
 
+  const handleRippleAction = (event) => {
+    if (event.nativeEvent.state === State.BEGAN) {
+      // console.log('onSingleTap')
+      centerX.value = event.nativeEvent.x
+      centerY.value = event.nativeEvent.y
+      scale.value = 0
+      opacity.value = 1
+    }
+    if (event.nativeEvent.state === State.ACTIVE) {
+      typeof onPress === 'function' && runOnJS(onPress)()
+    }
+    if (event.nativeEvent.state === State.END) {
+      scale.value = withTiming(1, { duration: 500 })
+      opacity.value = withTiming(0, { duration: 500 })
+    }
+    // if (event.nativeEvent.state === State.FAILED) {
+    //   scale.value = withTiming(0, { duration: 500 })
+    //   opacity.value = withTiming(1, { duration: 500 })
+    // }
+  }
+
   const onLayout = useCallback((event) => {
     const { height, width } = event.nativeEvent.layout
     setMeasure({
@@ -70,34 +85,23 @@ const RippleButton = ({
     })
   }, [])
 
-  const onLongPress = useCallback((event) => {
-    if (event.nativeEvent.state === State.BEGAN) {
-      // console.log('onLongPress')
-    }
-  }, [])
+  // const onLongPress = useCallback((event) => {
+  //   handleRippleAction(event)
+  //   if (event.nativeEvent.state === State.BEGAN) {
+  //     // console.log('onLongPress')
+  //   }
+  // }, [])
 
   const onSingleTap = useCallback((event) => {
-    if (event.nativeEvent.state === State.BEGAN) {
-      // console.log('onSingleTap')
-      centerX.value = event.nativeEvent.x
-      centerY.value = event.nativeEvent.y
-      scale.value = 0
-      scale.value = withTiming(1, { duration: 500 })
-      opacity.value = 1
-    }
-    if (event.nativeEvent.state === State.ACTIVE) {
-      typeof onPress === 'function' && runOnJS(onPress)()
-    }
-    if (event.nativeEvent.state === State.END) {
-      opacity.value = withTiming(0)
-    }
+    handleRippleAction(event)
   }, [])
 
-  const onDoubleTap = useCallback((event) => {
-    if (event.nativeEvent.state === State.BEGAN) {
-      // console.log('onDoubleTap')
-    }
-  }, [])
+  // const onDoubleTap = useCallback((event) => {
+  //   handleRippleAction(event)
+  //   if (event.nativeEvent.state === State.BEGAN) {
+  //     // console.log('onDoubleTap')
+  //   }
+  // }, [])
 
   const Content = () => {
     return (
@@ -110,31 +114,31 @@ const RippleButton = ({
 
   return (
     <View onLayout={!measure && onLayout}>
-      <LongPressGestureHandler
+      {/* <LongPressGestureHandler
         onHandlerStateChange={onLongPress}
         minDurationMs={minDurationMs}
+      > */}
+      <TapGestureHandler
+        onHandlerStateChange={onSingleTap}
+        waitFor={doubleTapRef}
       >
-        <TapGestureHandler
-          onHandlerStateChange={onSingleTap}
-          waitFor={doubleTapRef}
-        >
-          <TapGestureHandler
+        {/* <TapGestureHandler
             ref={doubleTapRef}
             onHandlerStateChange={onDoubleTap}
             numberOfTaps={2}
-          >
-            {animated ? (
-              <Animated.View style={[styles.button, style]}>
-                <Content />
-              </Animated.View>
-            ) : (
-              <View style={[styles.button, style]}>
-                <Content />
-              </View>
-            )}
-          </TapGestureHandler>
-        </TapGestureHandler>
-      </LongPressGestureHandler>
+          > */}
+        {animated ? (
+          <Animated.View style={[styles.button, style]}>
+            <Content />
+          </Animated.View>
+        ) : (
+          <View style={[styles.button, style]}>
+            <Content />
+          </View>
+        )}
+        {/* </TapGestureHandler> */}
+      </TapGestureHandler>
+      {/* </LongPressGestureHandler> */}
     </View>
   )
 }
