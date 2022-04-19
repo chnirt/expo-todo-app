@@ -1,6 +1,6 @@
 ## Teaser
 
-![alt text](./src/assets/teaser.gif)
+![alt text](./src/assets/teaser-rotato.gif)
 
 ## See more
 
