@@ -59,17 +59,19 @@ const Task = ({ index, isBasic, task, onValueUpdate, onValueDelete }) => {
           >
             {task?.title}
           </Animated.Text>
-          <Animated.Text
-            style={[
-              animatedTextStyle,
-              styles.todoText,
-              styles.timeText,
-              task.completed && styles.completedText,
-            ]}
-            numberOfLines={1}
-          >
-            {new Date(task?.createdAt?.toDate()).toDateString()}
-          </Animated.Text>
+          {task?.createdAt?.seconds ? (
+            <Animated.Text
+              style={[
+                animatedTextStyle,
+                styles.todoText,
+                styles.timeText,
+                task.completed && styles.completedText,
+              ]}
+              numberOfLines={1}
+            >
+              {new Date(task?.createdAt?.seconds * 1000).toDateString()}
+            </Animated.Text>
+          ) : null}
         </View>
       </View>
     )

@@ -8,7 +8,9 @@ import {
   doc,
   getDocs,
   getFirestore,
+  onSnapshot,
   query,
+  serverTimestamp,
   setDoc,
   where,
 } from 'firebase/firestore'
@@ -57,6 +59,7 @@ export const saveTodoToFirestore = async (todoInput) => {
       title,
       completed,
       userId: auth.currentUser.uid,
+      createdAt: serverTimestamp()
     }
     const docRef = await addDoc(collection(db, 'todos'), todoData)
     // console.log('Document written with ID: ', docRef.id)
@@ -82,6 +85,15 @@ export const getToDosFromFirestore = async () => {
     toDos.push(toDo)
   })
   return toDos
+}
+
+export const onSnapshotToDos = (nextOrObserver) => {
+  const q = query(
+    collection(db, 'todos'),
+    where('userId', '==', auth.currentUser.uid)
+  )
+
+  onSnapshot(q, nextOrObserver);
 }
 
 export const updateToDoToFirestore = async (toDo) => {

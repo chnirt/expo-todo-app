@@ -8,7 +8,8 @@ import {
 } from 'react'
 import {
   deleteToDoFromFirestore,
-  getToDosFromFirestore,
+  // getToDosFromFirestore,
+  onSnapshotToDos,
   saveTodoToFirestore,
   updateToDoToFirestore,
 } from '../firebase'
@@ -22,11 +23,21 @@ export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState(null)
 
   useEffect(() => {
-    const fetchTask = async () => {
-      const toDosResponse = await getToDosFromFirestore()
-      setTasks(toDosResponse)
-    }
-    const unsubscribed = fetchTask()
+    // const fetchTask = async () => {
+    //   const toDosResponse = await getToDosFromFirestore()
+    //   setTasks(toDosResponse)
+    // }
+    // const unsubscribed = fetchTask()
+
+    const unsubscribed = onSnapshotToDos((querySnapshot) => {
+      const data = querySnapshot.docs.map((docSnapshot) => {
+        return {
+          id: docSnapshot.id,
+          ...docSnapshot.data(),
+        }
+      })
+      setTasks(data)
+    })
 
     return () => {
       unsubscribed()
@@ -37,15 +48,12 @@ export const TaskProvider = ({ children }) => {
 
   const addTask = useCallback(async (title) => {
     show()
-    const createdAt = +new Date()
     let newTask = {
       title,
-      createdAt,
       completed: false,
     }
-    const docRef = await saveTodoToFirestore(newTask)
-    newTask.id = docRef.id
-    setTasks((prevState) => [newTask].concat(prevState ?? []))
+    const newTodoResponse = await saveTodoToFirestore(newTask)
+    // setTasks((prevState) => [newTodoResponse].concat(prevState ?? []))
     setNewTask('')
     hide()
   }, [])
@@ -54,7 +62,7 @@ export const TaskProvider = ({ children }) => {
     show()
     const updatedToDo = {
       id: task.id,
-      completed: !task.completed
+      completed: !task.completed,
     }
     const updatedToDoResponse = await updateToDoToFirestore(updatedToDo)
     if (updatedToDoResponse) {
