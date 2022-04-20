@@ -41,7 +41,7 @@ const Task = ({ index, isBasic, task, onValueUpdate, onValueDelete }) => {
     return (
       <View style={styles.row}>
         <View style={styles.checkBoxContainer}>
-          {task.completed ? (
+          {task?.completed ? (
             <CheckBoxSvg fill={getFill()} />
           ) : (
             <UnCheckBoxSvg fill={getFill()} />
@@ -57,7 +57,7 @@ const Task = ({ index, isBasic, task, onValueUpdate, onValueDelete }) => {
             ]}
             numberOfLines={2}
           >
-            {task.title}
+            {task?.title}
           </Animated.Text>
           <Animated.Text
             style={[
@@ -68,7 +68,7 @@ const Task = ({ index, isBasic, task, onValueUpdate, onValueDelete }) => {
             ]}
             numberOfLines={1}
           >
-            {task.createdAt}
+            {new Date(task?.createdAt?.toDate()).toDateString()}
           </Animated.Text>
         </View>
       </View>
